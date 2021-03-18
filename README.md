@@ -1,4 +1,4 @@
 # bookmark-app
 
 ## Screenshot
-![screenshot](https://github.com/martinapinky/bookmark-app/blob/master/img/screenshot.png?raw=true)
+![screenshot](https://github.com/martinapinky/bookmark-app/blob/master/screenshot.png?raw=true)
