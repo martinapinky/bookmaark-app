@@ -6,7 +6,7 @@ const websitenameEl = document.getElementById('website-name');
 const websiteUrlEl = document.getElementById('website-url');
 const bookmarksContainer = document.getElementById('bookmarks-container');
 
-let bookmarks = [];
+let bookmarks = {};
 
 // Show Modal, Focus on Input
 function showModal() {
@@ -37,6 +37,44 @@ function validate(nameValue, urlValue) {
     }
 }
 
+// Build Bookmarks DOM
+function buildBookmarks() {
+    // Remove all bookmark elements
+    bookmarksContainer.textContent = '';
+    // Build items
+    // bookmarks.forEach((bookmark) => {
+    Object.keys(bookmarks).forEach((id) => {
+
+        // const { name, url } = bookmark;
+        const { name, url } = bookmarks[id];
+
+        // Item
+        const item = document.createElement('div');
+        item.classList.add('item');
+        // Close Icon
+        const closeIcon = document.createElement('i');
+        closeIcon.classList.add('fas', 'fa-times');
+        closeIcon.setAttribute('title', 'Delete Bookmark');
+        closeIcon.setAttribute('onclick', `deleteBookmark('${url}')`);
+        // Favicon / Link container
+        const linkInfo = document.createElement('div');
+        linkInfo.classList.add('name');
+        // Favicon
+        const favicon = document.createElement('img');
+        favicon.setAttribute('src', `https://www.google.com/s2/favicons?domain=${url}`);
+        favicon.setAttribute('alt', 'Favicon');
+        // Link
+        const link = document.createElement('a');
+        link.setAttribute('href', `${url}`);
+        link.setAttribute('target', '_blank');
+        link.textContent = name;
+        // Append to bookmarks container
+        linkInfo.append(favicon, link);
+        item.append(closeIcon, linkInfo);
+        bookmarksContainer.appendChild(item);
+    });
+}
+
 // Fetch Bookmarks
 function fetchBookmarks() {
     // Get bookmarks from localStorage if available
@@ -44,14 +82,33 @@ function fetchBookmarks() {
         bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
     } else {
         // Create bookmarks array in localStorage
-        bookmarks = [
-            {
-                name: 'Martina Alinda',
-                url: 'https://martinaalinda.com'
-            },
-        ];
+        // bookmarks = [
+        //     {
+        //         name: 'Martina Alinda',
+        //         url: 'https://martinaalinda.com'
+        //     },
+        // ];
+        const id = `https://martinaalinda.com`
+        bookmarks[id] = {
+            name: 'Martina Alinda',
+            url: 'https://martinaalinda.com'
+        }
+
         localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
     }
+    buildBookmarks();
+}
+
+// Delete Bookmark
+function deleteBookmark(url) {
+    bookmarks.forEach((bookmark, i) => {
+        if (bookmark.url === url) {
+            bookmarks.splice(i, 1);
+        }
+    });
+    // Update bookmarks array in localStorage, re-populate DOM
+    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+    fetchBookmarks();
 }
 
 // Handle Data from Form
